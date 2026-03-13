@@ -1,0 +1,168 @@
+.loginPage {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Left Panel ── */
+.left {
+  flex: 1;
+  background: linear-gradient(135deg, #6a85f1 0%, #a3bef7 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 48px;
+  color: #fff;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.logoIcon {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.tagline h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.tagline p {
+  font-size: 14px;
+  opacity: 0.85;
+  margin-bottom: 36px;
+}
+
+.featureCard {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.featureIcon {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.featureCard h3 {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.featureCard p {
+  font-size: 12px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+.badges {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  flex: 1;
+}
+
+/* ── Right Panel ── */
+.right {
+  width: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  background: #f5f7fb;
+}
+
+/* ── Tablet (768px - 1024px) ── */
+@media (max-width: 1024px) {
+  .left {
+    padding: 36px 32px;
+  }
+
+  .right {
+    width: 420px;
+    padding: 36px 28px;
+  }
+
+  .tagline h2 {
+    font-size: 22px;
+  }
+
+  .badges {
+    flex-direction: column;
+  }
+}
+
+/* ── Mobile (< 768px) ── */
+@media (max-width: 768px) {
+  .loginPage {
+    flex-direction: column;
+  }
+
+  .left {
+    padding: 28px 20px;
+  }
+
+  .logo {
+    margin-bottom: 24px;
+  }
+
+  .tagline h2 {
+    font-size: 20px;
+  }
+
+  .tagline p {
+    margin-bottom: 20px;
+  }
+
+  .featureCard {
+    padding: 14px 16px;
+  }
+
+  .badges {
+    flex-direction: row;
+  }
+
+  .badge {
+    padding: 10px 14px;
+    font-size: 12px;
+  }
+
+  .right {
+    width: 100%;
+    padding: 28px 20px;
+  }
+}
