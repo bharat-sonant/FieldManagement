@@ -1,4 +1,3 @@
-/* ── Row ── */
 .row {
   display: flex;
   align-items: center;
@@ -11,7 +10,6 @@
 .row:hover { background: #f6f8ff; }
 .row:last-child { border-bottom: none; }
 
-/* ── Index cell ── */
 .indexCell {
   width: 46px;
   min-width: 46px;
@@ -29,12 +27,8 @@
 .indexCell:hover .indexNum { display: none; }
 .indexCell:hover .eyeIcon  { display: flex; }
 
-/* ── Title cell ── */
 .titleCell {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
   overflow: hidden;
   padding: 7px 12px 7px 0;
 }
@@ -46,17 +40,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
 }
 
-.desc {
-  font-size: 12px;
-  color: #9ca3af;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ── Meta ── */
 .meta {
   display: flex;
   align-items: center;
@@ -70,16 +56,6 @@
   min-width: 60px;
   text-align: right;
 }
-
-.badge {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 10px;
-  border-radius: 20px;
-}
-
-.kpiBadge   { background: #eef1ff; color: #2d3a8c; }
-.otherBadge { background: #fef3c7; color: #b45309; }
 
 .avatar {
   width: 28px;
@@ -95,11 +71,7 @@
   flex-shrink: 0;
 }
 
-/* ── Status dropdown ── */
-.statusWrap {
-  position: relative;
-  flex-shrink: 0;
-}
+.statusWrap { position: relative; flex-shrink: 0; }
 
 .statusBtn {
   display: flex;
@@ -112,22 +84,13 @@
   cursor: pointer;
   font-size: 11px;
   font-weight: 600;
-  color: #374151;
   transition: background 0.15s;
   white-space: nowrap;
 }
 
 .statusBtn:hover { background: #f0f2f8; }
 
-.statusDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.statusLabel { letter-spacing: 0.03em; }
-
+.statusLabel   { letter-spacing: 0.03em; }
 .statusChevron { color: #9ca3af; flex-shrink: 0; }
 
 .statusDropdown {
@@ -147,7 +110,6 @@
 .statusOption {
   display: flex;
   align-items: center;
-  gap: 10px;
   width: 100%;
   padding: 9px 14px;
   border: none;
@@ -161,12 +123,7 @@
 
 .statusOption:hover { background: #f9fafb; }
 
-/* ── 3-dot menu ── */
-.menuWrap {
-  position: relative;
-  margin-left: 4px;
-  flex-shrink: 0;
-}
+.menuWrap { position: relative; margin-left: 4px; flex-shrink: 0; }
 
 .menuBtn {
   border: none;
@@ -216,7 +173,6 @@
 .editOption:hover   { background: #f0f3ff; }
 .deleteOption:hover { background: #fef2f2; }
 
-/* ── Right Drawer ── */
 .drawerOverlay {
   position: fixed;
   inset: 0;
@@ -235,10 +191,10 @@
   z-index: 201;
   display: flex;
   flex-direction: column;
-  animation: slideInRight 0.25s ease;
+  animation: slideIn 0.25s ease;
 }
 
-@keyframes slideInRight {
+@keyframes slideIn {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }
 }
@@ -256,10 +212,8 @@
   height: 36px;
   border-radius: 6px;
   flex-shrink: 0;
+  background: linear-gradient(180deg, #6a85f1, #a3bef7);
 }
-
-.kpiBar   { background: linear-gradient(180deg, #6a85f1, #a3bef7); }
-.otherBar { background: linear-gradient(180deg, #f59e0b, #fcd34d); }
 
 .drawerTitle {
   flex: 1;
@@ -291,11 +245,7 @@
   overflow-y: auto;
 }
 
-.drawerField {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+.drawerField { display: flex; flex-direction: column; gap: 6px; }
 
 .fieldLabel {
   font-size: 11px;
@@ -311,9 +261,7 @@
   line-height: 1.6;
 }
 
-/* ── Responsive ── */
 @media (max-width: 768px) {
-  .desc     { display: none; }
   .duration { display: none; }
   .drawer   { width: 100%; }
 }

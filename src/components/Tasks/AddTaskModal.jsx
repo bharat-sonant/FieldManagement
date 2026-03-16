@@ -4,13 +4,11 @@ import styles from './AddTaskModal.module.css'
 
 const CMDS = ['bold', 'italic', 'underline', 'strikeThrough', 'insertUnorderedList', 'insertOrderedList']
 
-const AddTaskModal = ({ type, task, onClose }) => {
-  const isKpi  = type === 'kpi'
+const AddTaskModal = ({ task, onClose }) => {
   const isEdit = !!task
 
   const [title,         setTitle]         = useState(task?.title || '')
   const [titleError,    setTitleError]    = useState('')
-  const [descError,     setDescError]     = useState('')
   const [activeFormats, setActiveFormats] = useState({})
   const editorRef = useRef(null)
 
@@ -28,12 +26,9 @@ const AddTaskModal = ({ type, task, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const desc = editorRef.current?.innerText?.trim() || ''
-    let hasError = false
-    if (!title.trim()) { setTitleError('Title is required'); hasError = true } else setTitleError('')
-    if (!desc)         { setDescError('Description is required'); hasError = true } else setDescError('')
-    if (hasError) return
-    console.log(isEdit ? 'Update Task:' : 'New Task:', { title, description: desc, type, id: task?.id })
+    if (!title.trim()) { setTitleError('Title is required'); return }
+    const desc = editorRef.current?.innerHTML || ''
+    console.log(isEdit ? 'Update Task:' : 'New Task:', { title, description: desc, id: task?.id })
     onClose()
   }
 
@@ -42,15 +37,12 @@ const AddTaskModal = ({ type, task, onClose }) => {
       <div className={styles.modal}>
 
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>
-            {isEdit ? (isKpi ? 'Edit KPI Task' : 'Edit Other Task') : (isKpi ? 'Add KPI Task' : 'Add Other Task')}
-          </h2>
+          <h2 className={styles.modalTitle}>{isEdit ? 'Edit Task' : 'Add Task'}</h2>
           <button className={styles.closeBtn} onClick={onClose}><X size={18} /></button>
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
 
-          {/* Title */}
           <div className={styles.field}>
             <label className={styles.label}>Task Title</label>
             <input
@@ -62,10 +54,9 @@ const AddTaskModal = ({ type, task, onClose }) => {
             {titleError && <span className={styles.error}>{titleError}</span>}
           </div>
 
-          {/* Description */}
           <div className={styles.field}>
             <label className={styles.label}>Description</label>
-            <div className={`${styles.editorWrap} ${descError ? styles.inputError : ''}`}>
+            <div className={styles.editorWrap}>
               <div className={styles.toolbar}>
                 <button type="button" className={`${styles.toolBtn} ${activeFormats['bold'] ? styles.toolActive : ''}`} onMouseDown={(e) => exec(e, 'bold')}><Bold size={14} /></button>
                 <button type="button" className={`${styles.toolBtn} ${activeFormats['italic'] ? styles.toolActive : ''}`} onMouseDown={(e) => exec(e, 'italic')}><Italic size={14} /></button>
@@ -81,17 +72,15 @@ const AddTaskModal = ({ type, task, onClose }) => {
                 contentEditable
                 suppressContentEditableWarning
                 data-placeholder="Start writing..."
-                onInput={() => { if (descError) setDescError('') }}
                 onKeyUp={updateFormats}
                 onMouseUp={updateFormats}
                 onSelect={updateFormats}
                 dangerouslySetInnerHTML={isEdit ? { __html: task?.description || '' } : undefined}
               />
             </div>
-            {descError && <span className={styles.error}>{descError}</span>}
           </div>
 
-          <button type="submit" className={`${styles.saveBtn} ${isKpi ? styles.kpiSave : styles.otherSave}`}>
+          <button type="submit" className={styles.saveBtn}>
             {isEdit ? 'Update' : 'Save'}
           </button>
 
