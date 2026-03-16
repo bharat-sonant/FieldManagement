@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
-import { MapPin, LayoutDashboard, Users, ClipboardList, Navigation, Menu, X } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { MapPin, LayoutDashboard, Users, ClipboardList, Navigation, Menu, X, LogOut } from 'lucide-react'
 import styles from './Navbar.module.css'
 
 const navItems = [
@@ -11,12 +11,32 @@ const navItems = [
 ]
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const [menuOpen, setMenuOpen]       = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
+
+  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const initials = user?.name ? user.name.charAt(0).toUpperCase() : 'A'
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    navigate('/login')
+  }
 
   return (
     <>
       <nav className={styles.navbar}>
-        {/* Logo */}
         <NavLink to="/dashboard" className={styles.logo}>
           <div className={styles.logoIcon}>
             <MapPin size={18} color="#fff" />
@@ -24,7 +44,6 @@ const Navbar = () => {
           <span className={styles.logoText}>Field Portal</span>
         </NavLink>
 
-        {/* Desktop Nav */}
         <ul className={styles.navLinks}>
           {navItems.map((item) => (
             <li key={item.path}>
@@ -39,19 +58,33 @@ const Navbar = () => {
           ))}
         </ul>
 
-        {/* Right */}
         <div className={styles.navRight}>
-          <button className={styles.avatarBtn}>A</button>
-          <button
-            className={styles.hamburger}
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
+          <div className={styles.avatarWrap} ref={dropdownRef}>
+            <button className={styles.avatarBtn} onClick={() => setDropdownOpen(!dropdownOpen)}>
+              {initials}
+            </button>
+
+            {dropdownOpen && (
+              <div className={styles.dropdown}>
+                <div className={styles.dropdownUser}>
+                  <span className={styles.dropdownName}>{user?.name || 'User'}</span>
+                  <span className={styles.dropdownEmail}>{user?.email || ''}</span>
+                </div>
+                <hr className={styles.divider} />
+                <button className={styles.logoutBtn} onClick={handleLogout}>
+                  <LogOut size={15} />
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+
+          <button className={styles.hamburger} onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
           {navItems.map((item) => (
@@ -65,6 +98,10 @@ const Navbar = () => {
               {item.label}
             </NavLink>
           ))}
+          <button className={styles.mobileLogout} onClick={handleLogout}>
+            <LogOut size={15} />
+            Logout
+          </button>
         </div>
       )}
     </>

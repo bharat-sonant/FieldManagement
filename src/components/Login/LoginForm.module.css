@@ -137,9 +137,13 @@
 
 .errorMsg {
   color: #e53935;
-  font-size: 13px;
-  margin-bottom: 16px;
-  text-align: center;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}
+
+.inputError {
+  border-color: #e53935 !important;
 }
 
 /* ── Tablet ── */

@@ -1,8 +1,22 @@
-import axios from 'axios'
+import api from '../../utils/api'
 
-const API_URL = import.meta.env.VITE_API_URL
+export const loginUser = async (formData, setLoading, onSuccess, onError) => {
+  try {
+    setLoading(true)
+    const result = await api.post(`fe-users/new-login`, {
+      email:    formData.email,
+      password: formData.password,
+    })
 
-export const loginUser = async ({ email, password }) => {
-  const response = await axios.post(`${API_URL}/auth/login`, { email, password })
-  return response.data
+    if (result?.status === 'success') {
+      onSuccess(result.data)
+    } else {
+      onError(result?.message || 'Login failed')
+    }
+  } catch (error) {
+    console.error('Error in login:', error)
+    onError('Invalid email or password')
+  } finally {
+    setLoading(false)
+  }
 }

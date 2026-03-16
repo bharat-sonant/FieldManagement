@@ -5,15 +5,20 @@ import Users from '../pages/Users'
 import Tasks from '../pages/Tasks'
 import Tracking from '../pages/Tracking'
 
+const ProtectedRoute = ({ children }) => {
+  const user = localStorage.getItem('user')
+  return user ? children : <Navigate to="/login" replace />
+}
+
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/users" element={<Users />} />
-      <Route path="/tasks" element={<Tasks />} />
-      <Route path="/tracking" element={<Tracking />} />
+      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+      <Route path="/users"     element={<ProtectedRoute><Users /></ProtectedRoute>} />
+      <Route path="/tasks"     element={<ProtectedRoute><Tasks /></ProtectedRoute>} />
+      <Route path="/tracking"  element={<ProtectedRoute><Tracking /></ProtectedRoute>} />
     </Routes>
   )
 }
