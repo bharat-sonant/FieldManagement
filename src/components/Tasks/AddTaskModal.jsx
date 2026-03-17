@@ -1,16 +1,25 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { X, Bold, Italic, Underline, Strikethrough, List, ListOrdered } from 'lucide-react'
+import { addTask, updateTask } from '../../actions/Tasks/tasksAction'
+import { setAlertMessage } from '../../utils/setAlertMessage'
 import styles from './AddTaskModal.module.css'
 
 const CMDS = ['bold', 'italic', 'underline', 'strikeThrough', 'insertUnorderedList', 'insertOrderedList']
 
-const AddTaskModal = ({ task, onClose }) => {
+const AddTaskModal = ({ task, onClose, onSuccess }) => {
   const isEdit = !!task
 
   const [title,         setTitle]         = useState(task?.title || '')
   const [titleError,    setTitleError]    = useState('')
   const [activeFormats, setActiveFormats] = useState({})
+  const [loading,       setLoading]       = useState(false)
   const editorRef = useRef(null)
+
+  useEffect(() => {
+    if (editorRef.current && task?.description) {
+      editorRef.current.innerText = task.description
+    }
+  }, [])
 
   const updateFormats = () => {
     const state = {}
@@ -27,9 +36,26 @@ const AddTaskModal = ({ task, onClose }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!title.trim()) { setTitleError('Title is required'); return }
-    const desc = editorRef.current?.innerHTML || ''
-    console.log(isEdit ? 'Update Task:' : 'New Task:', { title, description: desc, id: task?.id })
-    onClose()
+
+    const description = editorRef.current?.innerText?.trim() || ''
+    const formData    = { title: title.trim(), description }
+
+    if (isEdit) {
+      updateTask({
+        id: task.id,
+        ...formData,
+        setLoading,
+        onSuccess: (data) => onSuccess(data, formData),
+        onError:   (msg)  => setAlertMessage('error', msg),
+      })
+    } else {
+      addTask({
+        ...formData,
+        setLoading,
+        onSuccess: (data) => onSuccess(data, formData),
+        onError:   (msg)  => setAlertMessage('error', msg),
+      })
+    }
   }
 
   return (
@@ -38,7 +64,7 @@ const AddTaskModal = ({ task, onClose }) => {
 
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>{isEdit ? 'Edit Task' : 'Add Task'}</h2>
-          <button className={styles.closeBtn} onClick={onClose}><X size={18} /></button>
+          <button className={styles.closeBtn} onClick={onClose} disabled={loading}><X size={18} /></button>
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
@@ -75,13 +101,12 @@ const AddTaskModal = ({ task, onClose }) => {
                 onKeyUp={updateFormats}
                 onMouseUp={updateFormats}
                 onSelect={updateFormats}
-                dangerouslySetInnerHTML={isEdit ? { __html: task?.description || '' } : undefined}
               />
             </div>
           </div>
 
-          <button type="submit" className={styles.saveBtn}>
-            {isEdit ? 'Update' : 'Save'}
+          <button type="submit" className={styles.saveBtn} disabled={loading}>
+            {loading ? (isEdit ? 'Updating...' : 'Saving...') : (isEdit ? 'Update' : 'Save')}
           </button>
 
         </form>

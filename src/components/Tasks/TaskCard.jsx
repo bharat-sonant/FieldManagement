@@ -42,7 +42,7 @@ const TaskCard = ({ task, index, onDelete, onEdit }) => {
               </button>
               <button
                 className={styles.deleteOption}
-                onClick={() => { setShowMenu(false); onDelete(task.id) }}
+                onClick={() => { setShowMenu(false); onDelete(task) }}
               >
                 <Trash2 size={13} /> Delete
               </button>
@@ -68,7 +68,7 @@ const TaskCard = ({ task, index, onDelete, onEdit }) => {
               </div>
               <div className={styles.drawerField}>
                 <span className={styles.fieldLabel}>Description</span>
-                <span className={styles.fieldValue}>{task.description}</span>
+                <span className={styles.fieldValue}>{task.description || '—'}</span>
               </div>
             </div>
           </div>
