@@ -31,6 +31,12 @@ export const loginUser = async (formData, setLoading, onSuccess, onError) => {
     }
 
     const user           = users[0]
+
+    if (user.status === 'INACTIVE') {
+      onError('Your account has been deactivated. Please contact admin.')
+      return
+    }
+
     const storedPassword = await decrypt(user.password)
 
     if (storedPassword !== formData.password) {

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Search, X } from 'lucide-react'
 import styles from './UsersSidebar.module.css'
 
-const UsersSidebar = ({ users, selectedUser, onSelect, filter, onFilterChange, loading }) => {
+const UsersSidebar = ({ users, selectedUser, onSelect, filter, onFilterChange, loading, loggedInEmployeeId }) => {
   const [searchOpen, setSearchOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -64,7 +64,12 @@ const UsersSidebar = ({ users, selectedUser, onSelect, filter, onFilterChange, l
             className={`${styles.userItem} ${selectedUser?.employeeId === user.employeeId ? styles.selected : ''}`}
             onClick={() => onSelect(user)}
           >
-            <span className={styles.userName}>{user.name}</span>
+            <span className={styles.userName}>
+              {user.name}
+              {user.employeeId === loggedInEmployeeId && (
+                <span className={styles.youTag}>You</span>
+              )}
+            </span>
             <span className={styles.empBadge}>{user.employeeId}</span>
           </li>
         ))}

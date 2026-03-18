@@ -8,7 +8,7 @@ import ConfirmModal from './ConfirmModal'
 import AssignTaskDrawer from '../TaskAssigned/AssignTaskDrawer'
 import styles from './UserDetail.module.css'
 
-const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate }) => {
+const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate, loggedInEmployeeId }) => {
   const [statusLoading,   setStatusLoading]   = useState(false)
   const [showEdit,        setShowEdit]        = useState(false)
   const [showConfirm,     setShowConfirm]     = useState(false)
@@ -33,6 +33,7 @@ const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate }
   }
 
   const isActive = user.status === 'ACTIVE'
+  const isSelf   = user.employeeId === loggedInEmployeeId
 
   const handleTypeChange = (task, newType) => {
     if (newType === task.taskType) { setEditingTaskId(null); return }
@@ -73,12 +74,14 @@ const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate }
               Assign Task
             </button>
           )}
-          <button
-            className={isActive ? styles.deactivateBtn : styles.activateBtn}
-            onClick={() => setShowConfirm(true)}
-          >
-            {isActive ? 'Deactivate' : 'Activate'}
-          </button>
+          {!isSelf && (
+            <button
+              className={isActive ? styles.deactivateBtn : styles.activateBtn}
+              onClick={() => setShowConfirm(true)}
+            >
+              {isActive ? 'Deactivate' : 'Activate'}
+            </button>
+          )}
           <button className={styles.editBtn} onClick={() => setShowEdit(true)}>
             <Pencil size={15} />
           </button>

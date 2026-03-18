@@ -45,10 +45,12 @@ const Users = () => {
           filter={filter}
           onFilterChange={handleFilterChange}
           loading={loading}
+          loggedInEmployeeId={JSON.parse(localStorage.getItem('user') || '{}').employeeId}
         />
         <UserDetail
           user={selectedUser}
           loading={loading}
+          loggedInEmployeeId={JSON.parse(localStorage.getItem('user') || '{}').employeeId}
           onUserUpdate={(updatedUser) => {
             setActiveInactiveUserList((prev) =>
               prev.map((u) => u.employeeId === updatedUser.employeeId ? updatedUser : u)
