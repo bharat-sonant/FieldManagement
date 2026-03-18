@@ -4,19 +4,36 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { loginUser } from '../../actions/Login/loginAction'
 import styles from './LoginForm.module.css'
 
+const COOKIE_NAME = 'fm_remember'
+const COOKIE_DAYS = 30
+
+const setCookie = (value) => {
+  const expires = new Date(Date.now() + COOKIE_DAYS * 864e5).toUTCString()
+  document.cookie = `${COOKIE_NAME}=${encodeURIComponent(JSON.stringify(value))}; expires=${expires}; path=/; SameSite=Strict`
+}
+
+const getCookie = () => {
+  const match = document.cookie.split('; ').find((row) => row.startsWith(`${COOKIE_NAME}=`))
+  if (!match) return null
+  try { return JSON.parse(decodeURIComponent(match.split('=')[1])) } catch { return null }
+}
+
+const deleteCookie = () => {
+  document.cookie = `${COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+}
+
 const LoginForm = () => {
   const navigate = useNavigate()
-  const [formData, setFormData]         = useState({ email: '', password: '' })
+  const [formData,     setFormData]     = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
-  const [rememberMe, setRememberMe]     = useState(false)
-  const [loading, setLoading]           = useState(false)
-  const [errors, setErrors]             = useState({})
+  const [rememberMe,   setRememberMe]   = useState(false)
+  const [loading,      setLoading]      = useState(false)
+  const [errors,       setErrors]       = useState({})
 
   useEffect(() => {
-    const savedEmail    = localStorage.getItem('rememberedEmail')
-    const savedPassword = localStorage.getItem('rememberedPassword')
-    if (savedEmail && savedPassword) {
-      setFormData({ email: savedEmail, password: savedPassword })
+    const saved = getCookie()
+    if (saved?.email && saved?.password) {
+      setFormData({ email: saved.email, password: saved.password })
       setRememberMe(true)
     }
   }, [])
@@ -40,11 +57,9 @@ const LoginForm = () => {
     if (Object.keys(errs).length > 0) { setErrors(errs); return }
 
     if (rememberMe) {
-      localStorage.setItem('rememberedEmail',    formData.email)
-      localStorage.setItem('rememberedPassword', formData.password)
+      setCookie({ email: formData.email, password: formData.password })
     } else {
-      localStorage.removeItem('rememberedEmail')
-      localStorage.removeItem('rememberedPassword')
+      deleteCookie()
     }
 
     loginUser(
@@ -68,13 +83,8 @@ const LoginForm = () => {
           <label>Email Address</label>
           <div className={`${styles.inputWrapper} ${errors.email ? styles.inputError : ''}`}>
             <Mail className={styles.inputIcon} size={18} />
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-            />
+            <input type="email" name="email" placeholder="Enter your email"
+              value={formData.email} onChange={handleChange} />
           </div>
           {errors.email && <span className={styles.errorMsg}>{errors.email}</span>}
         </div>
@@ -83,36 +93,26 @@ const LoginForm = () => {
           <label>Password</label>
           <div className={`${styles.inputWrapper} ${errors.password ? styles.inputError : ''}`}>
             <Lock className={styles.inputIcon} size={18} />
-            <input
-              type={showPassword ? 'text' : 'password'}
-              name="password"
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
-            />
+            <input type={showPassword ? 'text' : 'password'} name="password"
+              placeholder="Enter your password" value={formData.password} onChange={handleChange} />
             <button type="button" className={styles.eyeBtn} onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
           {errors.password && <span className={styles.errorMsg}>{errors.password}</span>}
-          {errors.api     && <span className={styles.errorMsg}>{errors.api}</span>}
+          {errors.api      && <span className={styles.errorMsg}>{errors.api}</span>}
         </div>
 
         <div className={styles.formRow}>
           <label className={styles.rememberMe}>
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-            />
+            <input type="checkbox" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
             Remember me
           </label>
           <a href="#" className={styles.forgotLink}>Forgot password?</a>
         </div>
 
         <button type="submit" className={styles.loginBtn} disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-          <ArrowRight size={18} />
+          {loading ? 'Logging in...' : 'Login'}<ArrowRight size={18} />
         </button>
       </form>
     </div>

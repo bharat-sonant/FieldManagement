@@ -1,22 +1,24 @@
 import { useState, useRef, useEffect } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import { MapPin, LayoutDashboard, Users, ClipboardList, Navigation, Menu, X, LogOut } from 'lucide-react'
+import { MapPin, LayoutDashboard, Users, ClipboardList, Navigation, Menu, X, LogOut, ClipboardCheck } from 'lucide-react'
+import { supabase } from '../../utils/supabase'
 import styles from './Navbar.module.css'
 
 const navItems = [
-  { label: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={18} /> },
-  { label: 'Users',     path: '/users',     icon: <Users size={18} /> },
-  { label: 'Tasks',     path: '/tasks',     icon: <ClipboardList size={18} /> },
-  { label: 'Tracking',  path: '/tracking',  icon: <Navigation size={18} /> },
+  { label: 'Dashboard',    path: '/dashboard',    icon: <LayoutDashboard size={18} /> },
+  { label: 'Users',        path: '/users',        icon: <Users size={18} /> },
+  { label: 'Tasks',        path: '/tasks',        icon: <ClipboardList size={18} /> },
+  { label: 'Tracking',     path: '/tracking',     icon: <Navigation size={18} /> },
+  { label: 'Task Assigned',path: '/task-assigned',icon: <ClipboardCheck size={18} /> },
 ]
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const [menuOpen, setMenuOpen]       = useState(false)
+  const [menuOpen,     setMenuOpen]     = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
+  const user     = JSON.parse(localStorage.getItem('user') || '{}')
   const initials = user?.name ? user.name.charAt(0).toUpperCase() : 'A'
 
   useEffect(() => {
@@ -29,7 +31,8 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
     localStorage.removeItem('user')
     navigate('/login')
   }
@@ -38,21 +41,15 @@ const Navbar = () => {
     <>
       <nav className={styles.navbar}>
         <NavLink to="/dashboard" className={styles.logo}>
-          <div className={styles.logoIcon}>
-            <MapPin size={18} color="#fff" />
-          </div>
+          <div className={styles.logoIcon}><MapPin size={18} color="#fff" /></div>
           <span className={styles.logoText}>Field Portal</span>
         </NavLink>
 
         <ul className={styles.navLinks}>
           {navItems.map((item) => (
             <li key={item.path}>
-              <NavLink
-                to={item.path}
-                className={({ isActive }) => isActive ? styles.active : ''}
-              >
-                {item.icon}
-                {item.label}
+              <NavLink to={item.path} className={({ isActive }) => isActive ? styles.active : ''}>
+                {item.icon}{item.label}
               </NavLink>
             </li>
           ))}
@@ -63,22 +60,19 @@ const Navbar = () => {
             <button className={styles.avatarBtn} onClick={() => setDropdownOpen(!dropdownOpen)}>
               {initials}
             </button>
-
             {dropdownOpen && (
               <div className={styles.dropdown}>
                 <div className={styles.dropdownUser}>
-                  <span className={styles.dropdownName}>{user?.name || 'User'}</span>
+                  <span className={styles.dropdownName}>{user?.name  || 'User'}</span>
                   <span className={styles.dropdownEmail}>{user?.email || ''}</span>
                 </div>
                 <hr className={styles.divider} />
                 <button className={styles.logoutBtn} onClick={handleLogout}>
-                  <LogOut size={15} />
-                  Logout
+                  <LogOut size={15} /> Logout
                 </button>
               </div>
             )}
           </div>
-
           <button className={styles.hamburger} onClick={() => setMenuOpen(!menuOpen)}>
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
@@ -94,13 +88,11 @@ const Navbar = () => {
               className={({ isActive }) => isActive ? styles.active : ''}
               onClick={() => setMenuOpen(false)}
             >
-              {item.icon}
-              {item.label}
+              {item.icon}{item.label}
             </NavLink>
           ))}
           <button className={styles.mobileLogout} onClick={handleLogout}>
-            <LogOut size={15} />
-            Logout
+            <LogOut size={15} /> Logout
           </button>
         </div>
       )}

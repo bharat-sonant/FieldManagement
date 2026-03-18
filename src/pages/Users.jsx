@@ -12,7 +12,7 @@ const Users = () => {
   const [selectedUser, setSelectedUser]                     = useState(null)
   const [activeInactiveUserList, setActiveInactiveUserList] = useState([])
   const [filter, setFilter]                                 = useState('ACTIVE')
-  const [loading, setLoading]                               = useState(false)
+  const [loading, setLoading]                               = useState(true)
   const [showModal, setShowModal]                           = useState(false)
 
   useEffect(() => {
@@ -48,6 +48,7 @@ const Users = () => {
         />
         <UserDetail
           user={selectedUser}
+          loading={loading}
           onUserUpdate={(updatedUser) => {
             setActiveInactiveUserList((prev) =>
               prev.map((u) => u.employeeId === updatedUser.employeeId ? updatedUser : u)

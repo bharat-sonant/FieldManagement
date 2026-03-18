@@ -24,7 +24,9 @@ const TaskCard = ({ task, index, onDelete, onEdit }) => {
         </div>
 
         <div className={styles.titleCell}>
-          <span className={styles.title}>{task.title}</span>
+          <span className={styles.title} title={task.title.length > 100 ? task.title : undefined}>
+            {task.title.length > 100 ? task.title.slice(0, 100) + '...' : task.title}
+          </span>
         </div>
 
 
@@ -68,7 +70,7 @@ const TaskCard = ({ task, index, onDelete, onEdit }) => {
               </div>
               <div className={styles.drawerField}>
                 <span className={styles.fieldLabel}>Description</span>
-                <span className={styles.fieldValue}>{task.description || '—'}</span>
+                <span className={styles.fieldValue} dangerouslySetInnerHTML={{ __html: task.description || '—' }} />
               </div>
             </div>
           </div>

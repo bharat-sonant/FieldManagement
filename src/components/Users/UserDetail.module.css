@@ -60,6 +60,20 @@
   gap: 10px;
 }
 
+.assignTaskBtn {
+  padding: 7px 16px;
+  border: 1.5px solid #6a85f1;
+  border-radius: 8px;
+  background: #fff;
+  color: #6a85f1;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.assignTaskBtn:hover { background: #eef1ff; }
+
 .deactivateBtn {
   padding: 7px 16px;
   border: 1.5px solid #f87171;
@@ -112,6 +126,121 @@
 
 .editBtn:hover {
   background: #f3f4f6;
+}
+
+.taskSection {
+  margin-top: 24px;
+}
+
+.taskSectionLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2d3a8c;
+  margin: 0 0 12px;
+}
+
+.taskEmpty {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.taskList {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e8ecf8;
+  border-radius: 10px;
+  overflow-y: auto;
+  max-height: 320px;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.taskList::-webkit-scrollbar       { width: 4px; }
+.taskList::-webkit-scrollbar-track { background: transparent; }
+.taskList::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+
+.taskRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 16px;
+  border-bottom: 1px solid #f0f2f8;
+  transition: background 0.15s;
+}
+
+.taskRow:last-child { border-bottom: none; }
+.taskRow:hover { background: #f8f9ff; }
+
+.taskIndex {
+  font-size: 12px;
+  color: #b0badc;
+  font-weight: 500;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.taskTitle {
+  font-size: 13.5px;
+  color: #374151;
+  word-break: break-word;
+  flex: 1;
+}
+
+.badgeKpi {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #eef1ff;
+  color: #6a85f1;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badgeOther {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #fffbeb;
+  color: #d97706;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.taskEditBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.taskRow:hover .taskEditBtn { opacity: 1; }
+.taskEditBtn:hover { color: #6a85f1; }
+
+.typeSelect {
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid #6a85f1;
+  border-radius: 6px;
+  padding: 2px 6px;
+  color: #6a85f1;
+  background: #eef1ff;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
 }
 
 @media (max-width: 600px) {

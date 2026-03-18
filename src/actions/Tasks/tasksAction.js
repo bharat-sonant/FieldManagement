@@ -1,14 +1,15 @@
-import api from '../../utils/api'
+import { supabase } from '../../utils/supabase'
 
 export const fetchTasks = async ({ setLoading, onSuccess, onError }) => {
   setLoading(true)
   try {
-    const result = await api.get('/tasks')
-    if (result?.success) {
-      onSuccess(result?.data?.tasks || [])
-    } else {
-      onError(result?.message || 'Failed to fetch tasks')
-    }
+    const { data, error } = await supabase
+      .from('FETasks')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) { onError(error.message); return }
+    onSuccess(data)
   } catch {
     onError('Something went wrong')
   } finally {
@@ -19,12 +20,14 @@ export const fetchTasks = async ({ setLoading, onSuccess, onError }) => {
 export const addTask = async ({ title, description, setLoading, onSuccess, onError }) => {
   setLoading(true)
   try {
-    const result = await api.post('/tasks/create', { title, description })
-    if (result?.success) {
-      onSuccess(result?.data)
-    } else {
-      onError(result?.message || 'Failed to add task')
-    }
+    const { data, error } = await supabase
+      .from('FETasks')
+      .insert({ title, description })
+      .select()
+      .single()
+
+    if (error) { onError(error.message); return }
+    onSuccess(data)
   } catch {
     onError('Something went wrong')
   } finally {
@@ -35,12 +38,15 @@ export const addTask = async ({ title, description, setLoading, onSuccess, onErr
 export const updateTask = async ({ id, title, description, setLoading, onSuccess, onError }) => {
   setLoading(true)
   try {
-    const result = await api.patch(`/tasks/${id}`, { title, description })
-    if (result?.success) {
-      onSuccess(result?.data)
-    } else {
-      onError(result?.message || 'Failed to update task')
-    }
+    const { data, error } = await supabase
+      .from('FETasks')
+      .update({ title, description })
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) { onError(error.message); return }
+    onSuccess(data)
   } catch {
     onError('Something went wrong')
   } finally {
@@ -51,12 +57,13 @@ export const updateTask = async ({ id, title, description, setLoading, onSuccess
 export const deleteTask = async ({ id, setLoading, onSuccess, onError }) => {
   setLoading(true)
   try {
-    const result = await api.delete(`/tasks/${id}`)
-    if (result?.success) {
-      onSuccess()
-    } else {
-      onError(result?.message || 'Failed to delete task')
-    }
+    const { error } = await supabase
+      .from('FETasks')
+      .delete()
+      .eq('id', id)
+
+    if (error) { onError(error.message); return }
+    onSuccess()
   } catch {
     onError('Something went wrong')
   } finally {
