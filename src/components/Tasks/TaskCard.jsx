@@ -27,6 +27,18 @@ const TaskCard = ({ task, index, onDelete, onEdit }) => {
           <span className={styles.title} title={task.title.length > 100 ? task.title : undefined}>
             {task.title.length > 100 ? task.title.slice(0, 100) + '...' : task.title}
           </span>
+          <div className={styles.taskMeta}>
+            {task.priority && (
+              <span className={`${styles.priorityBadge} ${styles['priority' + (task.priority || 'MEDIUM')]}`}>
+                {task.priority.charAt(0) + task.priority.slice(1).toLowerCase()}
+              </span>
+            )}
+            {task.deadline && (
+              <span className={styles.deadlineTag}>
+                Due: {new Date(task.deadline).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+              </span>
+            )}
+          </div>
         </div>
 
 

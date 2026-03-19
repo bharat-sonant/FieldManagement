@@ -52,7 +52,8 @@
   padding: 20px 24px 0;
 }
 
-.field { display: flex; flex-direction: column; gap: 6px; }
+.field    { display: flex; flex-direction: column; gap: 6px; }
+.fieldRow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
 .label {
   font-size: 13px;

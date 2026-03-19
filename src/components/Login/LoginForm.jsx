@@ -67,7 +67,7 @@ const LoginForm = () => {
       setLoading,
       (userData) => {
         localStorage.setItem('user', JSON.stringify(userData))
-        navigate('/dashboard')
+        navigate(userData.role === 'ADMIN' ? '/dashboard' : '/fe/home')
       },
       (msg) => setErrors({ api: msg })
     )

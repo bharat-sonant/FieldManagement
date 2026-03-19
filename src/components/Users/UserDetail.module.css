@@ -128,6 +128,22 @@
   background: #f3f4f6;
 }
 
+.roleBtn {
+  padding: 7px 16px;
+  border: 1.5px solid #7c3aed;
+  border-radius: 8px;
+  background: #fff;
+  color: #7c3aed;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.roleBtn:hover    { background: #f5f3ff; }
+.roleBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+
 .taskSection {
   margin-top: 24px;
 }
@@ -212,6 +228,20 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+.priorityBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pHigh   { background: #fee2e2; color: #dc2626; }
+.pMedium { background: #fef9c3; color: #ca8a04; }
+.pLow    { background: #dcfce7; color: #16a34a; }
 
 .taskEditBtn {
   background: none;

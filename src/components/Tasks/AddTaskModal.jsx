@@ -34,6 +34,10 @@ const AddTaskModal = ({ task, onClose, onSuccess }) => {
   const [activeFormats, setActiveFormats] = useState({})
   const [loading,       setLoading]       = useState(false)
   const [descCount,     setDescCount]     = useState(task?.description?.length || 0)
+  const [deadline,      setDeadline]      = useState(
+    task?.deadline ? task.deadline.split('T')[0] : ''
+  )
+  const [priority,      setPriority]      = useState(task?.priority || 'MEDIUM')
   const editorRef = useRef(null)
 
   useEffect(() => {
@@ -104,7 +108,7 @@ const AddTaskModal = ({ task, onClose, onSuccess }) => {
     if (!title.trim()) { setTitleError('Title is required'); return }
 
     const description = editorRef.current?.innerHTML?.trim() || ''
-    const formData    = { title: title.trim(), description }
+    const formData    = { title: title.trim(), description, deadline: deadline || null, priority }
 
     if (isEdit) {
       updateTask({
@@ -144,6 +148,30 @@ const AddTaskModal = ({ task, onClose, onSuccess }) => {
               placeholder="Enter task title"
             />
             {titleError && <span className={styles.error}>{titleError}</span>}
+          </div>
+
+          <div className={styles.fieldRow}>
+            <div className={styles.field}>
+              <label className={styles.label}>Deadline</label>
+              <input
+                type="date"
+                className={styles.input}
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+              />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Priority</label>
+              <select
+                className={styles.input}
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+              >
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+              </select>
+            </div>
           </div>
 
           <div className={styles.field}>

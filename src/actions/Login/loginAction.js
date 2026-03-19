@@ -51,6 +51,7 @@ export const loginUser = async (formData, setLoading, onSuccess, onError) => {
       email:        formData.email,
       mobileNumber: await decrypt(user.mobile_number),
       status:       user.status,
+      role:         user.role || 'FIELD_EXECUTIVE',
     })
   } catch {
     onError('Something went wrong')

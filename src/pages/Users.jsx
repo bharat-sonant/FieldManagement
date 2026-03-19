@@ -58,6 +58,12 @@ const Users = () => {
             setSelectedUser(updatedUser)
             setAlertMessage('success', `${updatedUser.name} updated successfully`)
           }}
+          onRoleChange={(updatedUser) => {
+            setActiveInactiveUserList((prev) =>
+              prev.map((u) => u.employeeId === updatedUser.employeeId ? { ...u, role: updatedUser.role } : u)
+            )
+            setSelectedUser((prev) => prev ? { ...prev, role: updatedUser.role } : prev)
+          }}
           onStatusChange={(updatedUser) => {
             const updatedList = activeInactiveUserList.map((u) =>
               u.employeeId === updatedUser.employeeId ? { ...u, status: updatedUser.status } : u

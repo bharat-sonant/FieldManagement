@@ -20,6 +20,7 @@ const toUser = async (u) => ({
   email:        await decrypt(u.email),
   mobileNumber: await decrypt(u.mobile_number),
   status:       u.status,
+  role:         u.role || 'FIELD_EXECUTIVE',
 })
 
 export const fetchUserData = async (setSelectedUser, setUsers, setLoading, setActiveInactiveUserList) => {
@@ -156,6 +157,28 @@ export const changeUserStatus = async (employeeId, currentStatus, setLoading, on
 
     if (error) { onError(error.message); return }
     onSuccess(await toUser(data))
+  } catch {
+    onError('Something went wrong')
+  } finally {
+    setLoading(false)
+  }
+}
+
+export const changeUserRole = async ({ employeeId, currentRole, setLoading, onSuccess, onError }) => {
+  setLoading(true)
+  try {
+    const newRole = currentRole === 'FIELD_EXECUTIVE' ? 'ADMIN' : 'FIELD_EXECUTIVE'
+
+    const { data, error } = await supabase
+      .from('FieldExecutives')
+      .update({ role: newRole })
+      .eq('employee_id', employeeId)
+      .select()
+      .single()
+
+    if (error) { onError(error.message); return }
+    const updated = await toUser(data)
+    onSuccess({ ...updated, role: newRole })
   } catch {
     onError('Something went wrong')
   } finally {

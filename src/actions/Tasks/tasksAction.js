@@ -17,12 +17,16 @@ export const fetchTasks = async ({ setLoading, onSuccess, onError }) => {
   }
 }
 
-export const addTask = async ({ title, description, setLoading, onSuccess, onError }) => {
+export const addTask = async ({ title, description, deadline, priority, setLoading, onSuccess, onError }) => {
   setLoading(true)
   try {
+    const payload = { title, description }
+    if (deadline) payload.deadline = deadline
+    if (priority) payload.priority = priority
+
     const { data, error } = await supabase
       .from('FETasks')
-      .insert({ title, description })
+      .insert(payload)
       .select()
       .single()
 
@@ -35,12 +39,16 @@ export const addTask = async ({ title, description, setLoading, onSuccess, onErr
   }
 }
 
-export const updateTask = async ({ id, title, description, setLoading, onSuccess, onError }) => {
+export const updateTask = async ({ id, title, description, deadline, priority, setLoading, onSuccess, onError }) => {
   setLoading(true)
   try {
+    const payload = { title, description }
+    if (deadline !== undefined) payload.deadline = deadline || null
+    if (priority) payload.priority = priority
+
     const { data, error } = await supabase
       .from('FETasks')
-      .update({ title, description })
+      .update(payload)
       .eq('id', id)
       .select()
       .single()

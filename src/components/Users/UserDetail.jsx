@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Pencil } from 'lucide-react'
-import { changeUserStatus } from '../../actions/Users/usersAction'
+import { changeUserStatus, changeUserRole } from '../../actions/Users/usersAction'
 import { fetchAssignedTasks, updateTaskType } from '../../actions/TaskAssigned/taskAssignedAction'
 import { setAlertMessage } from '../../utils/setAlertMessage'
 import EditUserModal from './EditUserModal'
@@ -8,10 +8,12 @@ import ConfirmModal from './ConfirmModal'
 import AssignTaskDrawer from '../TaskAssigned/AssignTaskDrawer'
 import styles from './UserDetail.module.css'
 
-const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate, loggedInEmployeeId }) => {
+const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate, onRoleChange, loggedInEmployeeId }) => {
   const [statusLoading,   setStatusLoading]   = useState(false)
+  const [roleLoading,     setRoleLoading]     = useState(false)
   const [showEdit,        setShowEdit]        = useState(false)
   const [showConfirm,     setShowConfirm]     = useState(false)
+  const [showRoleConfirm, setShowRoleConfirm] = useState(false)
   const [showAssign,      setShowAssign]      = useState(false)
   const [assignedTasks,   setAssignedTasks]   = useState([])
   const [tasksLoading,    setTasksLoading]    = useState(true)
@@ -60,6 +62,20 @@ const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate, 
     )
   }
 
+  const handleRoleConfirm = () => {
+    changeUserRole({
+      employeeId:  user.employeeId,
+      currentRole: user.role || 'FIELD_EXECUTIVE',
+      setLoading:  setRoleLoading,
+      onSuccess: (updated) => {
+        setShowRoleConfirm(false)
+        setAlertMessage('success', `${user.name} is now ${updated.role === 'ADMIN' ? 'an Admin' : 'a Field Executive'}`)
+        if (onRoleChange) onRoleChange(updated)
+      },
+      onError: (msg) => { setShowRoleConfirm(false); setAlertMessage('error', msg) },
+    })
+  }
+
   return (
     <div className={styles.detail}>
       <div className={styles.header}>
@@ -69,7 +85,7 @@ const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate, 
           <p className={styles.meta}>{user.employeeId} · {user.email}</p>
         </div>
         <div className={styles.actions}>
-          {isActive && (
+          {isActive && !isSelf && (
             <button className={styles.assignTaskBtn} onClick={() => setShowAssign(true)}>
               Assign Task
             </button>
@@ -80,6 +96,15 @@ const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate, 
               onClick={() => setShowConfirm(true)}
             >
               {isActive ? 'Deactivate' : 'Activate'}
+            </button>
+          )}
+          {!isSelf && isActive && (
+            <button
+              className={styles.roleBtn}
+              onClick={() => setShowRoleConfirm(true)}
+              disabled={roleLoading}
+            >
+              {(user.role || 'FIELD_EXECUTIVE') === 'FIELD_EXECUTIVE' ? 'Make Admin' : 'Make FE'}
             </button>
           )}
           <button className={styles.editBtn} onClick={() => setShowEdit(true)}>
@@ -100,6 +125,11 @@ const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate, 
               <div key={task.id} className={styles.taskRow}>
                 <span className={styles.taskIndex}>{i + 1}</span>
                 <span className={styles.taskTitle}>{task.title}</span>
+                {task.priority && (
+                  <span className={`${styles.priorityBadge} ${styles[`p${task.priority[0]}${task.priority.slice(1).toLowerCase()}`]}`}>
+                    {task.priority}
+                  </span>
+                )}
                 {editingTaskId === task.id ? (
                   <select
                     className={styles.typeSelect}
@@ -134,6 +164,15 @@ const UserDetail = ({ user, loading: pageLoading, onStatusChange, onUserUpdate, 
           onConfirm={handleConfirm}
           onCancel={() => setShowConfirm(false)}
           loading={statusLoading}
+        />
+      )}
+
+      {showRoleConfirm && (
+        <ConfirmModal
+          message={`Change ${user.name}'s role to ${(user.role || 'FIELD_EXECUTIVE') === 'FIELD_EXECUTIVE' ? 'Admin' : 'Field Executive'}?`}
+          onConfirm={handleRoleConfirm}
+          onCancel={() => setShowRoleConfirm(false)}
+          loading={roleLoading}
         />
       )}
 
